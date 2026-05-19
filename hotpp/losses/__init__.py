@@ -27,6 +27,17 @@ from .horizon_diffusion_v41 import HorizonDiffusionLossV41
 from .horizon_diffusion_v42 import HorizonDiffusionLossV42
 from .horizon_diffusion_v43 import HorizonDiffusionLossV43
 from .horizon_diffusion_detpp_all_comps_in_decoder import HorizonDiffusionLossDetppAllCompsInDecoder
+from .horizon_diffusion_detpp_query_only_decoder import (
+    HorizonDiffusionLossDetppQueryOnlyDecoder,
+    HorizonDiffusionLossDetppQueryOnlyDecoderHorizonMask,
+    HorizonDiffusionLossDetppQueryOnlyDecoderNoPadding,
+    HorizonDiffusionLossDetppLatentContextDecoder,
+    HorizonDiffusionLossDetppLatentOnlyDecoder,
+    HorizonDiffusionLossDetppQueryOnlyDecoderMatchingPadding,
+    HorizonDiffusionLossDetppQueryOnlyDecoderMatchingRealign,
+    HorizonDiffusionLossDetppQueryOnlyDecoderFarTarget,
+    HorizonDiffusionLossDetppQueryOnlyDecoderRandomPad,
+)
 from .horizon_diffusion_v44 import HorizonDiffusionLossV44  # backwards-compat alias
 from .horizon_diffusion_v46 import HorizonDiffusionLossV46
 from .horizon_diffusion_v47 import HorizonDiffusionLossV47
@@ -36,3 +47,4 @@ from .horizon_diffusion_v49 import HorizonDiffusionLossV49
 from .horizon_diffusion_v50 import HorizonDiffusionLossV50
 from .horizon_diffusion_matching_padding import HorizonDiffusionLossMatchingPadding
 from .horizon_diffusion_detpp_matching_padding import HorizonDiffusionLossDetppMatchingPadding
+from .horizon_diffusion_detpp_prediction_space import HorizonDiffusionLossDetppPredictionSpace

@@ -1,6 +1,8 @@
 from hotpp.data import PaddedBatch
 from ..fields import LABELS_LOGITS
 from .base_module import BaseModule
+# import logging
+# logger = logging.getLogger("my_app")
 
 
 class NextKModule(BaseModule):
@@ -48,6 +50,8 @@ class NextKModule(BaseModule):
                                             logits_fields_mapping=logits_fields_mapping)  # (B, L, K) or (B, L, K, C).
         # Convert delta time to time.
         results.payload[self._timestamps_field] += inputs.payload[self._timestamps_field].unsqueeze(2)
+
+        # logger.info("NEXT K Module Results = %s", results)
         return results
 
     def generate_sequences(self, x, indices):
@@ -62,11 +66,15 @@ class NextKModule(BaseModule):
         """
         init_times = x.payload[self._timestamps_field].take_along_dim(indices.payload, 1)  # (B, I).
         init_times = PaddedBatch({self._timestamps_field: init_times}, indices.seq_lens)
+        # logger.info("NEXT K Module init_times = %s", init_times)
         outputs, states = self(x, return_states="full" if self._need_states else False)  # (B, L, D), (N, B, L, D).
         outputs = PaddedBatch(outputs.payload.take_along_dim(indices.payload.unsqueeze(2), 1),
                               indices.seq_lens)  # (B, I, D).
         states = states.take_along_dim(indices.payload[None, :, :, None], 2) if states is not None else states  # (N, B, I, D).
-        sequences = self.predict_next_k(init_times, outputs, states, logits_fields_mapping={self._labels_field: LABELS_LOGITS})  # (B, I, K) or (B, I, K, C).
+        # logger.info("NEXT K Module outputs = %s", outputs)
+        # logger.info("NEXT K Module states = %s", states)
+        sequences = self.predict_next_k(init_times, outputs, states, logits_fields_mapping={self._labels_field: LABELS_LOGITS})  # 
+        # logger.info("NEXT K Module sequences = %s", sequences)
         if self._max_predictions is not None:
             sequences = PaddedBatch({k: (v[:, :, :self._max_predictions] if k in sequences.seq_names else v)
                                      for k, v in sequences.payload.items()},

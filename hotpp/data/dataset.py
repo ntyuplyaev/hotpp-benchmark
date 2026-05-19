@@ -13,6 +13,9 @@ from ptls.data_load.datasets import parquet_file_scan
 
 from .padded_batch import PaddedBatch
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 def get_nested_value(value):
     if isinstance(value, list):
@@ -216,6 +219,8 @@ class HotppDataset(torch.utils.data.IterableDataset):
                 payload[k] = torch.full((b, l), v, device=batch.device)
             batch = PaddedBatch(payload, batch.seq_lens,
                                 seq_names=set(batch.seq_names) | set(self.add_seq_fields))
+            
+        logger.info("Padded Batch = %s", batch)
         return batch
 
     def collate_fn(self, batch):
@@ -237,6 +242,29 @@ class HotppDataset(torch.utils.data.IterableDataset):
         # Make PaddedBatch objects.
         features = self._make_batch(by_name, batch_size, self.timestamps_field)
         targets = self._make_batch(targets_by_name, batch_size, self.local_targets_indices_field)
+
+        # if features is not None:
+        #     logger.info(
+        #         "features: size=%d, seq_lens=%s, fields=%s",
+        #         len(features.seq_lens),
+        #         features.seq_lens.tolist(),
+        #         list(features.payload.keys()) if isinstance(features.payload, dict) else "tensor",
+        #     )
+
+        # if targets is not None:
+        #     logger.info(
+        #         "targets: size=%d, seq_lens=%s, fields=%s",
+        #         len(targets.seq_lens),
+        #         targets.seq_lens.tolist(),
+        #         list(targets.payload.keys()) if isinstance(targets.payload, dict) else "tensor",
+        #     )
+
+        # hotpp/data/dataset.py
+        # logger.info("timestamps[0][:10]=%s", features.payload["timestamps"][0, :10].tolist())
+        # logger.info("labels[0][:10]=%s", features.payload["labels"][0, :10].tolist())
+        # logger.info("seq_len[0]=%d", int(features.seq_lens[0]))
+
+
         return features, targets
 
 

@@ -69,8 +69,9 @@ def get_transactions(cache_dir):
                                  "amount")
 
     # Add log_amount.
-    udf = F.udf(lambda x: math.log(abs(x) + 1), FloatType())
-    dataset = dataset.withColumn("log_amount", udf(F.col("amount")))
+    dataset = dataset.withColumn(
+        "log_amount", F.log(F.abs(F.col("amount")) + F.lit(1.0)).cast(FloatType())
+    )
     return dataset
 
 
